@@ -40,9 +40,9 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 480);
             this.Controls.Add(this.panelCtrl);
             this.Name = "MainForm";
             this.Text = "MainForm";
@@ -50,8 +50,10 @@
 
         }
 
-        private System.Windows.Forms.Panel panelCtrl;
+
         #endregion
+
+        private System.Windows.Forms.Panel panelCtrl;
     }
 }
 

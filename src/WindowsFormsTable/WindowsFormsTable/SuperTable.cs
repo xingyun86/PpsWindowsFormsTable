@@ -13,10 +13,16 @@ namespace ppsyqm
         public Color line_color;
         public List<int> row_size_list = new List<int>();
         public List<int> col_size_list = new List<int>();
+        List<EntityObject> head_list = new List<EntityObject>();
         public List<List<EntityObject>> data_list = new List<List<EntityObject>>();
 
-        public void init_list(ref List<List<string>> dataList, ref List<int> rowSizeList, ref List<int> colSizeList, int startPointX = 0, int startPointY = 0)
+        public void init_list(ref List<string> headList, ref List<List<string>> dataList, ref List<int> rowSizeList, ref List<int> colSizeList, int startPointX = 0, int startPointY = 0)
         {
+            for(var i = 0; i < headList.Count; i++)
+            {
+                head_list.Add(new EntityObject() { });
+                head_list[i].value = headList[i];
+            }
             row_size_list = rowSizeList;
             col_size_list = colSizeList;
             for (var row = 0; row < dataList.Count; row++)
@@ -28,13 +34,22 @@ namespace ppsyqm
                     data_list[row][col].value = dataList[row][col];
                 }
             }
+            if (headList.Count > 0)
+            {
+                row_size_list.Insert(0, rowSizeList[0]);
+                data_list.Insert(0, new List<EntityObject>() { });
+                for (var row = 0; row < dataList[0].Count; row++)
+                {
+                    data_list[0].Add(new EntityObject() { });
+                }
+            }
             start_point.X = startPointX;
             start_point.Y = startPointY;
         }
 
-        public void init_list(ref List<List<string>> dataList, ref List<int> rowSizeList, ref List<int> colSizeList, Point startPoint)
+        public void init_list(ref List<string> headList, ref List<List<string>> dataList, ref List<int> rowSizeList, ref List<int> colSizeList, Point startPoint)
         {
-            init_list(ref dataList, ref rowSizeList, ref colSizeList, startPoint.X, startPoint.Y);
+            init_list(ref headList, ref dataList, ref rowSizeList, ref colSizeList, startPoint.X, startPoint.Y);
         }
 
         public void paint_table(Graphics graphics)
@@ -88,11 +103,11 @@ namespace ppsyqm
             Point ptP = start_point;
             for (var i = 0; i < xL; i++)
             {
-                ptP.X += row_size_list[i];
+                ptP.Y += row_size_list[i];
             }
             for (var i = 0; i < yL; i++)
             {
-                ptP.Y += col_size_list[i];
+                ptP.X += col_size_list[i];
             }
             return ptP;
         }
@@ -121,37 +136,58 @@ namespace ppsyqm
             Font drawFont = new Font("Arial", 8);
             // Create point for upper-left corner of drawing.
             SolidBrush drawBrush = new SolidBrush(Color.DarkSlateBlue);
-            for (var x = 0; x < data_list.Count && x < row_size_list.Count; x += 1)
+            var startPos = 0;
+            if(head_list.Count > 0)
             {
-                for (var y = 0; y < data_list[x].Count && y < col_size_list.Count; y += 1)
+                for (var col = 0; col < data_list[0].Count && col < head_list.Count; col += 1)
                 {
-                    string value = data_list[x][y].value;
-                    Point ptPhysicsXY = Logical2Physics(x, y);
-                    int nRowWidthXY = row_size_list[x];
-                    int nColWidthXY = col_size_list[y];
+                    string value = head_list[col].value;
+                    Point ptPhysicsXY = Logical2Physics(0, col);
+                    int nRowWidthXY = row_size_list[0];
+                    int nColWidthXY = col_size_list[col];
+
+                    Pen drawRectanglePen = new Pen(Color.DarkGreen, 2);
+                    SolidBrush drawRectangleBrush = new SolidBrush(Color.CadetBlue);
+                    var size = graphics.MeasureString(value, drawFont);
+                    graphics.DrawRectangle(drawRectanglePen, ptPhysicsXY.X, ptPhysicsXY.Y , nRowWidthXY, nColWidthXY);
+                    graphics.FillRectangle(drawRectangleBrush, ptPhysicsXY.X, ptPhysicsXY.Y, nRowWidthXY, nColWidthXY);
+                    graphics.DrawString(value, drawFont, drawBrush, ptPhysicsXY.X + (nRowWidthXY - size.Width) / 2, ptPhysicsXY.Y + (nColWidthXY - size.Height) / 2);
+                }
+                startPos = 1;
+            }
+            for (var row = startPos; row < data_list.Count && row < row_size_list.Count; row += 1)
+            {
+                for (var col = 0; col < data_list[row].Count && col < col_size_list.Count; col += 1)
+                {
+                    string value = data_list[row][col].value;
+                    Point ptPhysicsXY = Logical2Physics(row, col);
+                    int nRowWidthXY = row_size_list[row];
+                    int nColWidthXY = col_size_list[col];
 
                     Pen drawEllipsePen = new Pen(Color.DarkGreen, 2);
                     SolidBrush drawEllipseBrush = new SolidBrush(Color.LightBlue);
                     var size = graphics.MeasureString(value, drawFont);
-                    graphics.DrawEllipse(drawEllipsePen, ptPhysicsXY.X + 6, ptPhysicsXY.Y + 6, nRowWidthXY - 12, nColWidthXY - 12);
-                    graphics.FillEllipse(drawEllipseBrush, ptPhysicsXY.X + 6, ptPhysicsXY.Y + 6, nRowWidthXY - 12, nColWidthXY - 12);
+                    graphics.DrawEllipse(drawEllipsePen, ptPhysicsXY.X + 6, ptPhysicsXY.Y + 6, nRowWidthXY - 6 - 6, nColWidthXY - 6 - 6);
+                    graphics.FillEllipse(drawEllipseBrush, ptPhysicsXY.X + 6, ptPhysicsXY.Y + 6, nRowWidthXY - 6 - 6, nColWidthXY - 6 - 6);
                     graphics.DrawString(value, drawFont, drawBrush, ptPhysicsXY.X + (nRowWidthXY - size.Width) / 2, ptPhysicsXY.Y + (nColWidthXY - size.Height) / 2);
                 }
             }
         }
         public void paint_lines(Graphics graphics)
         {
+            var startValue = (head_list.Count > 0) ? 1 : 0;
+            var countValue = (head_list.Count > 0) ? (data_list[0].Count + 1) : data_list[0].Count;
             //画折线
             Pen drawLinePen = new Pen(Color.Red, 2);
             Random randNum = new Random();
-            int[] randNumList = new int[data_list.First().Count];
-            for (var i = 0; i < data_list.First().Count; i++)
+            int[] randNumList = new int[countValue];
+            for (var row = 0; row < countValue; row++)
             {
-                randNumList[i] = randNum.Next(0, 9);
+                randNumList[row] = randNum.Next(startValue, countValue - 1);
             }
-            for (var i = 0; i < randNumList.Count() - 1; i++)
+            for (var row = startValue; row < countValue - 1; row++)
             {
-                DrawLineWithPoints(graphics, drawLinePen, randNumList[i], i, randNumList[i + 1], i + 1);
+                DrawLineWithPoints(graphics, drawLinePen, row, randNumList[row], row + 1, randNumList[row + 1]);
             }
         }
     }

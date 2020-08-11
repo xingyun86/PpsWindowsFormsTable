@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using ppsyqm;
 
 namespace WindowsFormsTableApp
@@ -13,7 +11,6 @@ namespace WindowsFormsTableApp
 
             this.panelCtrl.AutoScroll = true;
             this.panelCtrl.Dock = DockStyle.Fill;
-
             {
                 this.panelCtrl.Controls.Add(new SuperTableForm());
             }

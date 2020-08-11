@@ -24,7 +24,8 @@ namespace ppsyqm
             this.Size = new System.Drawing.Size(ROW_NUM * ROW_WIDTH + START_X + 1, COL_NUM * COL_HEIGHT+ START_Y + 1);
 
             List<int> r_s_list = new List<int>();
-            List<int> c_s_list = new List<int>();
+            List<int> c_s_list = new List<int>(); 
+            List<string> h_list = new List<string>();
             List<List<string>> s_list = new List<List<string>>();
             for (var i = 0; i < ROW_NUM; i++)
             {
@@ -34,15 +35,19 @@ namespace ppsyqm
             {
                 c_s_list.Add(COL_HEIGHT);
             }
-            for (var i = 0; i < 16; i++)
+            for (var col = 0; col < 16; col++)
             {
                 s_list.Add(new List<string>() { });
-                for (var j = 0; j < 12; j++)
+                for (var row = 0; row < 12; row++)
                 {
-                    s_list[i].Add(i.ToString());
+                    s_list[col].Add(row.ToString());
                 }
             }
-            superTable.init_list(ref s_list, ref r_s_list, ref c_s_list, START_X, START_Y);
+            for (var col = 0; col < 16; col++)
+            {
+                h_list.Add((col + 1).ToString() + "号");
+            }
+            superTable.init_list(ref h_list, ref s_list, ref r_s_list, ref c_s_list, START_X, START_Y);
 
             gBitmap = new Bitmap(Width, Height);
             gGraphics = Graphics.FromImage(gBitmap);
