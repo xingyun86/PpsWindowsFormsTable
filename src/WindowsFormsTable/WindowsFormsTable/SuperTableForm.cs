@@ -6,10 +6,20 @@ using System.Windows.Forms;
 namespace ppsyqm
 {    class SuperTableForm: Form
     {
+        Bitmap gBitmap = null;
+        Graphics gGraphics = null;
         SuperTable superTable = new SuperTable();
         List<EntityObject> dataList = new List<EntityObject>();
+        public SuperTableForm(int ROW_NUM = 20, int COL_NUM = 13, int ROW_WIDTH = 36, int COL_HEIGHT = 36, int START_X = 10, int START_Y = 10)
+        {
+            InitForm(ROW_NUM, COL_NUM, ROW_WIDTH, COL_HEIGHT, START_X, START_Y);
+        }
         public void InitForm(int ROW_NUM = 20, int COL_NUM = 13, int ROW_WIDTH = 36, int COL_HEIGHT = 36, int START_X = 10, int START_Y = 10)
         {
+            //this.DoubleBuffered = true;
+            //this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint, true);
+            this.Dock = DockStyle.None;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.TopLevel = false;
             this.Size = new System.Drawing.Size(ROW_NUM * ROW_WIDTH + START_X + 1, COL_NUM * COL_HEIGHT+ START_Y + 1);
 
@@ -33,22 +43,34 @@ namespace ppsyqm
                 }
             }
             superTable.init_list(ref s_list, ref r_s_list, ref c_s_list, START_X, START_Y);
+
+            gBitmap = new Bitmap(Width, Height);
+            gGraphics = Graphics.FromImage(gBitmap);
+            RenderMemory(gGraphics);
+
+            this.Show();
         }
-        protected override void OnPaint(PaintEventArgs e)
+        void RenderMemory(Graphics g)
         {
-            //绘制表格
-            Graphics g = this.CreateGraphics();
             g.SmoothingMode = SmoothingMode.HighQuality;  //图片柔顺模式选择
             g.CompositingQuality = CompositingQuality.HighQuality;//再加一点
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;//高质量
             g.CompositingMode = CompositingMode.SourceOver;
 
             g.Clear(this.BackColor);
-            //g.Clear(Color.Transparent);
-            superTable.paint_table(g, e);
-            superTable.paint_lines(g, e);
-            superTable.paint_cells(g, e);
-            base.OnPaint(e);
+            //gGraphics.Clear(Color.Transparent);
+            superTable.paint_table(g);
+            superTable.paint_lines(g);
+            superTable.paint_cells(g);
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            //绘制表格
+            if (gGraphics != null && gBitmap != null)
+            {
+                e.Graphics.DrawImage(gBitmap, 0, 0);
+            }
+            //base.OnPaint(e);
         }
     }
 }

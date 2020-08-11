@@ -37,7 +37,7 @@ namespace ppsyqm
             init_list(ref dataList, ref rowSizeList, ref colSizeList, startPoint.X, startPoint.Y);
         }
 
-        public void paint_table(Graphics graphics, System.Windows.Forms.PaintEventArgs e)
+        public void paint_table(Graphics graphics)
         {
             //绘制表格
             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;  //图片柔顺模式选择
@@ -115,7 +115,7 @@ namespace ppsyqm
         {
             DrawLineWithPoints(graphics, drawLinePen, pt1.X, pt1.Y, pt2.X, pt2.Y);
         }
-        public void paint_cells(Graphics graphics, System.Windows.Forms.PaintEventArgs e)
+        public void paint_cells(Graphics graphics)
         {
             //设置画笔颜色和Pen_Size=3
             Font drawFont = new Font("Arial", 8);
@@ -139,7 +139,7 @@ namespace ppsyqm
                 }
             }
         }
-        public void paint_lines(Graphics graphics, System.Windows.Forms.PaintEventArgs e)
+        public void paint_lines(Graphics graphics)
         {
             //画折线
             Pen drawLinePen = new Pen(Color.Red, 2);
