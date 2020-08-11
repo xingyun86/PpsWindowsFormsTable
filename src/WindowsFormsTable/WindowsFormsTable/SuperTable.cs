@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
-namespace WindowsFormsTable
+namespace ppsyqm
 {
-    class TableCtrls
+    class SuperTable
     {
         Point start_point = new Point(10, 10);
         public int line_width;
@@ -39,7 +37,7 @@ namespace WindowsFormsTable
             init_list(ref dataList, ref rowSizeList, ref colSizeList, startPoint.X, startPoint.Y);
         }
 
-        public void paint_table(Graphics graphics, object sender, System.Windows.Forms.PaintEventArgs e)
+        public void paint_table(Graphics graphics, System.Windows.Forms.PaintEventArgs e)
         {
             //绘制表格
             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;  //图片柔顺模式选择
@@ -117,7 +115,7 @@ namespace WindowsFormsTable
         {
             DrawLineWithPoints(graphics, drawLinePen, pt1.X, pt1.Y, pt2.X, pt2.Y);
         }
-        public void paint_cells(Graphics graphics, object sender, System.Windows.Forms.PaintEventArgs e)
+        public void paint_cells(Graphics graphics, System.Windows.Forms.PaintEventArgs e)
         {
             //设置画笔颜色和Pen_Size=3
             Font drawFont = new Font("Arial", 8);
@@ -141,14 +139,20 @@ namespace WindowsFormsTable
                 }
             }
         }
-        public void paint_lines(Graphics graphics, object sender, System.Windows.Forms.PaintEventArgs e)
+        public void paint_lines(Graphics graphics, System.Windows.Forms.PaintEventArgs e)
         {
             //画折线
-            Pen drawLinePen = new Pen(Color.Green, 3);
-            DrawLineWithPoints(graphics, drawLinePen, 0, 0, 1, 1);
-            DrawLineWithPoints(graphics, drawLinePen, 0, 0, 1, 2);
-            DrawLineWithPoints(graphics, drawLinePen, 0, 0, 2, 1);
-            DrawLineWithPoints(graphics, drawLinePen, 2, 5, 6, 8);
+            Pen drawLinePen = new Pen(Color.Red, 2);
+            Random randNum = new Random();
+            int[] randNumList = new int[data_list.First().Count];
+            for (var i = 0; i < data_list.First().Count; i++)
+            {
+                randNumList[i] = randNum.Next(0, 9);
+            }
+            for (var i = 0; i < randNumList.Count() - 1; i++)
+            {
+                DrawLineWithPoints(graphics, drawLinePen, randNumList[i], i, randNumList[i + 1], i + 1);
+            }
         }
     }
 }

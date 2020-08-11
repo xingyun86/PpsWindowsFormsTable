@@ -1,7 +1,9 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 using ppsyqm;
 
-namespace WindowsFormsTable
+namespace WindowsFormsTableApp
 {
     public partial class MainForm : Form
     {
@@ -13,6 +15,7 @@ namespace WindowsFormsTable
 
             this.panelCtrl.AutoScroll = true;
             this.panelCtrl.Dock = DockStyle.Fill;
+
             {
                 superTableFormLeft.InitForm();
                 superTableFormLeft.Dock = DockStyle.Left;
